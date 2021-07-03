@@ -13,6 +13,9 @@ spec:
     type: string
     description: revision to be used from repo of the code for deployment
     default: "master"
+  - name: IMAGE
+    type: string
+    description: image to be build from the code
   tasks:
   - name: fetch-repository
     taskRef:
@@ -30,3 +33,15 @@ spec:
       value: "true"
     - name: revision
       value: $(params.git-revision)
+  - name: build-image
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+    - name: IMAGE
+      value: $(params.IMAGE)
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - fetch-repository
