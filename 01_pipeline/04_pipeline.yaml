@@ -40,6 +40,12 @@ spec:
     params:
     - name: IMAGE
       value: $(params.IMAGE)
+    - name: CONTEXT
+      value: $(workspaces.source.path)/inventory
+    - name: TLSVERIFY
+      value: "false"
+    - name: DOCKERFILE
+      value: ./inventory/src/main/docker/Dockerfile.jvm
     workspaces:
     - name: source
       workspace: shared-workspace
