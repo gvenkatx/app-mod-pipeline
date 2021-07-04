@@ -45,7 +45,7 @@ spec:
     - name: TLSVERIFY
       value: "false"
     - name: DOCKERFILE
-      value: ./inventory/src/main/docker/Dockerfile.jvm
+      value: ./Dockerfile
     workspaces:
     - name: source
       workspace: shared-workspace
