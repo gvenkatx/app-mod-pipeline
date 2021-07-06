@@ -1,10 +1,10 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: build-and-deploy
+  name: monolith-build-and-deploy
 spec:
   workspaces:
-  - name: shared-workspace
+  - name: shared-workspace-2
   params:
   - name: git-url
     type: string
@@ -23,7 +23,7 @@ spec:
       kind: ClusterTask
     workspaces:
     - name: output
-      workspace: shared-workspace
+      workspace: shared-workspace-2
     params:
     - name: url
       value: $(params.git-url)
@@ -35,19 +35,19 @@ spec:
       value: $(params.git-revision)
   - name: build-image
     taskRef:
-      name: buildah
-      kind: ClusterTask
+        kind: ClusterTask
+        name: s2i-java-11
     params:
-    - name: IMAGE
-      value: $(params.IMAGE)
-    - name: CONTEXT
-      value: $(workspaces.source.path)/inventory
-    - name: TLSVERIFY
-      value: "false"
-    - name: DOCKERFILE
-      value: ./Dockerfile
+      - name: PATH_CONTEXT
+        value: $(workspaces.source.path)/monolith
+      - name: TLSVERIFY
+        value: 'false'
+      - name: MAVEN_CLEAR_REPO
+        value: 'false'
+      - name: IMAGE
+        value: $(params.IMAGE)
+    runAfter:
+      - fetch-repository
     workspaces:
     - name: source
-      workspace: shared-workspace
-    runAfter:
-    - fetch-repository
+      workspace: shared-workspace-2

@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: monolith-build-deploy-pipelinerun
+spec:
+  pipelineRef:
+    name: monolith-build-and-deploy
+  params:
+  - name: deployment-name
+    value: monolith
+  - name: git-url
+    value: https://github.com/gvenkatx/app-mod-pipeline.git
+  - name: git-revision
+    value: ocp-4.7
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/inventory/app-mod-monolith
+  workspaces:
+  - name: shared-workspace-2
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
